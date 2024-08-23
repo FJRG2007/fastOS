@@ -75,6 +75,12 @@ def main():
             # Resets network settings (Winsock).
             (["netsh", "winsock", "reset"], "quick"),
             # Clears the DNS cache.
-            (["ipconfig", "/flushdns"], "quick")
+            (["ipconfig", "/flushdns"], "quick"),
+            # Disable hibernation.
+            (["powercfg", "-h", "off"], "quick")
+            # Run Disk Cleanup.
+            (["Cleanmgr", "/sagerun:1"], "complete"),
+            # Optimize the volume.
+            (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
         ] if level == "complete" or cmd_level == level]: run_command(command)
         break

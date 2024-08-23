@@ -9,7 +9,7 @@ options = [
     ("1", "all", f"All {cl.y}(Default){cl.w}"),
     ("2", "cleaner", f"Cleaner {cl.y}(Removes cache, uninstalled program files, etc.){cl.w}"),
     ("3", "configurator", f"Configurator {cl.y}(Improved performance and safety){cl.w}"),
-    ("4", "troubleshooter", f"Troubleshooter {cl.y}(Troubleshoot problems in your operating system){cl.w}"),
+    ("4", "troubleshooter", f"Troubleshooter {cl.y}(Improve performance and troubleshoot problems){cl.w}"),
     ("5", "uninstaller", f"Uninstaller {cl.y}(Removes bloatware and unnecessary apps){cl.w}")
 ]
 

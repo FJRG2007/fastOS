@@ -1,0 +1,15 @@
+# Python files.
+build
+fastOS.egg-info
+venv
+env
+__pycache__
+
+# Project development files.
+.env
+notes
+output
+
+# IDE configurations.
+.idea
+.vscode

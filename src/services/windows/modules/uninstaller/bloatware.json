@@ -1,0 +1,28 @@
+{
+    "basic": [
+        "Microsoft.3DBuilder",
+        "Microsoft.XboxApp",
+        "Microsoft.XboxGameOverlay",
+        "Microsoft.XboxSpeechToTextOverlay",
+        "Microsoft.BingWeather",
+        "Microsoft.WindowsCamera",
+        "Microsoft.ZuneMusic",
+        "Microsoft.ZuneVideo",
+        "Microsoft.SkypeApp",
+        "Microsoft.GetHelp",
+        "Microsoft.Getstarted",
+        "Microsoft.MicrosoftOfficeHub",
+        "Microsoft.OneConnect",
+        "Microsoft.MicrosoftSolitaireCollection",
+        "Microsoft.MicrosoftMahjong",
+        "Microsoft.MicrosoftMinesweeper",
+        "Microsoft.MicrosoftJigsaw",
+        "Microsoft.MixedReality.Portal",
+        "Microsoft.People"
+    ],
+    "web_apps": [
+        "Microsoft.Netflix",
+        "Microsoft.DisneyPlus",
+        "Amazon.AmazonPrimeVideo"
+    ] 
+}

@@ -5,11 +5,21 @@ from rich import print as rprint
 from rich.console import Console
 from urllib.parse import urlparse
 from rich.markdown import Markdown
-import os, re, sys, time, threading
+import os, re, sys, time, ctypes, subprocess
 
 def get_os_info():
     osName = platform.system()
-    return { "os": osName, "slug": osName.lower(), "version": platform.release() }
+    response = { "os": osName, "slug": osName.lower(), "version": platform.release() }
+    if response["slug"] == "windows":
+        try: is_admin = ctypes.windll.shell32.IsUserAnAdmin()
+        except: is_admin = False
+        if not is_admin: ctypes.windll.shell32.ShellExecuteW(None, "runas", "powershell.exe", f'powershell -Command "python "{sys.argv[0]}" {" ".join(sys.argv[1:])}"', None, 1)
+            
+    # Enabling root permissions in Unix/Linux distributions.
+    elif response["slug"] == "linux" and os.geteuid() != 0: 
+        try: subprocess.check_call(["sudo", sys.executable] + sys.argv)
+        except subprocess.CalledProcessError as e: terminal("e", f"Failed to elevate privileges: {e}")
+    return response
 
 console = Console()
 
@@ -82,10 +92,7 @@ def terminal(typeMessage, string="", exitScript=False, clear="n", newline=True, 
         if typeMessage == "l": print("\nThis may take a few seconds...")
         if typeMessage == "ai": 
             console.print(Panel(Markdown(string), title="Model's Response", title_align="left", expand=False, style="bold white"))
-            tr = threading.Thread(target=playVoice, args=(string,))
-            tr.daemon = True
-            tr.start()
-        if typeMessage == "info": console.print(Panel(Markdown(string), title="Snatch", title_align="left", expand=False, style="bold white"))
+        if typeMessage == "info": console.print(Panel(Markdown(string), title="FastOS", title_align="left", expand=False, style="bold white"))
         if typeMessage == "iom": 
             print(f"\n{cl.R} ERROR {cl.w} Please enter a valid option.")
             time.sleep(2)
@@ -98,7 +105,7 @@ def terminal(typeMessage, string="", exitScript=False, clear="n", newline=True, 
     if timer: time.sleep(2)
 
 def fileManager(path, filename, create=True):
-    directory = f"output/{path}/{filename}"
+    directory = f"disposable/{path}/{filename}"
     filename = re.sub(r'[^A-Za-z0-9._@-]', "", filename)
     if create: os.makedirs(os.path.dirname(directory), exist_ok=True)
     return directory

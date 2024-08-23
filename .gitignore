@@ -8,7 +8,7 @@ __pycache__
 # Project development files.
 .env
 notes
-output
+disposable
 
 # IDE configurations.
 .idea

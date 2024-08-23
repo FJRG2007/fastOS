@@ -1,0 +1,7 @@
+{
+    "basic": [
+        { "url": "https://1111-releases.cloudflareclient.com/win/latest", "filename": "Cloudflare_WARP_2024.6.473.0.msi", "name": "1.1.1.1 DNS (Cloudflare WARP)", "paths": [ "C:/Program Files/Cloudflare/Cloudflare WARP/Cloudflare WARP.exe" ] },
+        { "url": "https://laptop-updates.brave.com/download/BRV002?bitness=64", "filename": "brave.exe", "name": "Brave Browser", "paths": [ "C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe" ] },
+        { "url": "https://www.malwarebytes.com/mwb-download/thankyou", "filename": "MBSetup.exe", "name": "MalwareBytes", "paths": [ "C:/Program Files/Malwarebytes/Anti-Malware/Malwarebytes.exe" ] }
+    ]
+}

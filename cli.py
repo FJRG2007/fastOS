@@ -2,9 +2,9 @@ from dotenv import load_dotenv
 from src.utils.FastOS import FastOS
 from textual.widgets import Markdown
 from src.lib import data, colors as cl
-import sys, click, pyfiglet, importlib
-from src.utils.basics import cls, terminal
+from src.utils.basics import cls, terminal, get_os_info
 from textual.app import App, ComposeResult
+import sys, click, pyfiglet, importlib
 
 def get_function(module_name, function_name="main", clearTerminal=True):
     if clearTerminal: cls()

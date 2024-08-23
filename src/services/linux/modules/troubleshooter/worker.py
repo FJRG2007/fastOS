@@ -66,15 +66,17 @@ def main():
         level = "complete" if level == "1" else "quick"
         # Run the selected commands.
         for command in [cmd for cmd, cmd_level in [
-            # Repairs Windows image.
-            (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
-            # Scans and fixes corrupted system files.
-            (["sfc", "/scannow"], "quick"),
-            # Checks disk for errors and repairs them.
-            (["chkdsk", "C:", "/f", "/r"], "complete"),
-            # Resets network settings (Winsock).
-            (["netsh", "winsock", "reset"], "quick"),
-            # Clears the DNS cache.
-            (["ipconfig", "/flushdns"], "quick")
+            # Updates the package list.
+            (["sudo", "apt-get", "update"], "complete"),
+            # Upgrades all installed packages.
+            (["sudo", "apt-get", "upgrade", "-y"], "complete"),
+            # Remove packages that are no longer needed.
+            (["sudo", "apt-get", "autoremove", "-y"], "complete"),
+            # Clean temporary apt files.
+            (["sudo", "apt-get", "clean"], "quick"),
+            # Displays disk usage in readable format.
+            (["df", "-h"], "quick"),
+            # Restart the network.
+            (["sudo", "systemctl", "restart", "networking"], "quick")
         ] if level == "complete" or cmd_level == level]: run_command(command)
         break

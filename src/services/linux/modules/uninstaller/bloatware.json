@@ -1,0 +1,29 @@
+{
+    "basic": [
+        "thunderbird",
+        "rhythmbox",
+        "gnome-maps",
+        "cheese",
+        "totem",
+        "simple-scan",
+        "shotwell",
+        "aisleriot",
+        "gnome-sudoku",
+        "gnome-mahjongg",
+        "gnome-mines",
+        "gnome-weather",
+        "gnome-calendar",
+        "orca",
+        "brasero",
+        "epiphany-browser"
+    ],
+    "web_apps": [
+        "chromium",
+        "snapd",
+        "flatpak",
+        "gnome-software",
+        "webapps-gmail",
+        "webapps-twitter",
+        "webapps-facebook"
+    ]
+}

@@ -30,9 +30,8 @@ def main():
         try:
             index = int(selector) - 1
             if 0 <= index < len(options):
-                option_name = options[index][1]
                 cls()
-                if os_info["slug"] and os_info["slug"] != "error": get_function(os_info["slug"])(option_name)
+                if os_info["slug"] and os_info["slug"] != "error": get_function(os_info["slug"])(os_info["distribution_slug"], options[index][1]) if os_info["slug"] == "linux" else get_function(os_info["slug"])(options[index][1])
                 break  # Exit the loop if a valid option was processed.
             else: raise ValueError("Invalid selection")
         except ValueError as e: terminal("e", f"Invalid input: {e}")

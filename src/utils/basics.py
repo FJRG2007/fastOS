@@ -7,6 +7,9 @@ from urllib.parse import urlparse
 from rich.markdown import Markdown
 import os, re, sys, time, ctypes, subprocess
 
+try: import distro
+except ImportError: distro = None
+
 def get_os_info():
     osName = platform.system()
     response = { "os": osName, "slug": osName.lower(), "version": platform.release() }
@@ -14,7 +17,16 @@ def get_os_info():
         try: is_admin = ctypes.windll.shell32.IsUserAnAdmin()
         except: is_admin = False
         if not is_admin: ctypes.windll.shell32.ShellExecuteW(None, "runas", "powershell.exe", f'powershell -Command "python "{sys.argv[0]}" {" ".join(sys.argv[1:])}"', None, 1)
-            
+        if distro: response["distribution"] = distro.linux_distribution(full_distribution_name=False)[0]
+        else:
+            try:
+                with open('/etc/os-release') as f:
+                    for line in f:
+                        if line.startswith('NAME='):
+                            response["distribution"] = line.split("=")[1].strip().replace('"', "")
+                            break
+            except Exception as e: response["distribution"] = "Unknown"
+        response["distribution_slug"] = response["distribution"].lower()
     # Enabling root permissions in Unix/Linux distributions.
     elif response["slug"] == "linux" and os.geteuid() != 0: 
         try: subprocess.check_call(["sudo", sys.executable] + sys.argv)

@@ -1,0 +1,58 @@
+{
+    "basic": [
+        {
+            "name": "1.1.1.1 DNS (Cloudflare WARP)",
+            "distros": [
+                {
+                    "compatibility": ["ubuntu", "debian"],
+                    "cmd": [
+                        "curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg",
+                        "echo 'deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main' | sudo tee /etc/apt/sources.list.d/cloudflare-client.list",
+                        "sudo apt-get update && sudo apt-get install cloudflare-warp"
+                    ]
+                },
+                {
+                    "compatibility": ["redhat", "centos"],
+                    "cmd": [
+                        "curl -fsSl https://pkg.cloudflareclient.com/cloudflare-warp-ascii.repo | sudo tee /etc/yum.repos.d/cloudflare-warp.repo",
+                        "sudo yum update",
+                        "sudo yum install cloudflare-warp"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Brave Browser",
+            "distros": [
+                {
+                    "compatibility": ["ubuntu", "debian", "mint"],
+                    "cmd": [
+                        "sudo apt install curl",
+                        "sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https: //brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg",
+                        "echo 'deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main' | sudo tee /etc/apt/sources.list.d/brave-browser-release.list",
+                        "sudo apt update",
+                        "sudo apt install brave-browser"
+                    ]
+                },
+                {
+                    "compatibility": ["fedora", "rocky", "rhel"],
+                    "cmd": [
+                        "sudo dnf install dnf-plugins-core",
+                        "sudo dnf config-manager --add-repo https: //brave-browser-rpm-release.s3.brave.com/brave-browser.repo",
+                        "sudo rpm --import https: //brave-browser-rpm-release.s3.brave.com/brave-core.asc",
+                        "sudo dnf install brave-browser"
+                    ]
+                },
+                {
+                    "compatibility": ["opensuse"],
+                    "cmd": [
+                        "sudo zypper install curl",
+                        "sudo rpm --import https: //brave-browser-rpm-release.s3.brave.com/brave-core.asc",
+                        "sudo zypper addrepo https: //brave-browser-rpm-release.s3.brave.com/brave-browser.repo",
+                        "sudo zypper install brave-browser"
+                    ]
+                }
+            ]
+        }
+    ]
+}

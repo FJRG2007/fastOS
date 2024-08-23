@@ -1,5 +1,5 @@
 from pathlib import Path
-import os, shutil, ctypes, tempfile
+import os, shutil, tempfile
 from src.utils.basics import terminal
 
 def delete_folder_contents(folder_path):
@@ -18,13 +18,12 @@ def clear_temp_files():
 
 def clear_cache():
     # Deletes browser cache (Chrome and Firefox).
-    # Cache path for Google Chrome
-    chrome_cache = Path(os.getenv("LOCALAPPDATA")) / "Google/Chrome/User Data/Default/Cache"
+    # Cache path for Google Chrome.
+    chrome_cache = Path.home() / ".config/google-chrome/Default/Cache"
     if chrome_cache.exists(): delete_folder_contents(chrome_cache)
     
-    # Cache path for Firefox
-    firefox_cache = Path(os.getenv("APPDATA")) / "Mozilla/Firefox/Profiles"
-    for profile in firefox_cache.glob("*"):
+    # Cache path for Firefox.
+    for profile in Path.home() / ".mozilla/firefox".glob("*"):
         cache_folder = profile / "cache2"
         if cache_folder.exists(): delete_folder_contents(cache_folder)
 
@@ -32,13 +31,24 @@ def remove_uninstalled_program_files():
     # Deletes files from programs that are no longer installed.
     # This is a common place where some programs leave remnants.
     # Be cautious with deletion.
-    delete_folder_contents(Path(os.getenv("PROGRAMDATA")))
+    remove_paths = [
+        Path.home() / ".local/share"
+        # ...
+    ]
+    for path in remove_paths:
+        delete_folder_contents(path)
+
+def empty_trash():
+    # Empties the trash can.
+    trash_path = Path.home() / ".local/share/Trash"
+    if trash_path.exists():
+        delete_folder_contents(trash_path / "files")
+        delete_folder_contents(trash_path / "info")
 
 def main():
     print("Starting cleanup...")
     clear_temp_files()
     clear_cache()
-    # Empties the recycle bin.
-    ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 1)
+    empty_trash()
     remove_uninstalled_program_files()
     terminal("s", "Cleanup completed.")

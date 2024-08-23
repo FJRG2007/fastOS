@@ -7,3 +7,5 @@
   <br />
   <hr />
 </div>
+
+With **FastOS** you will be able to optimize your computer and/or server quickly while staying relatively safe on the Internet.

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: FastOS
+message: "Optimize and improve the performance and security of your PC/Server."
+type: software
+authors:
+  - given-names: FJRG2007
+    email: fjrg2007@tpeoficial.com
+repository-code: 'https://github.com/FJRG2007/fastOS'
+url: 'https://status.tpeoficial.com/development'
+abstract: >-
+  With **FastOS** you will be able to optimize your computer and/or server quickly while staying relatively safe on the Internet.
+keywords:
+  - security
+  - performance
+  - windows
+  - linux
+license: AGPL-3.0-or-later
+version: Coming Soon

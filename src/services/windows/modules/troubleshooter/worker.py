@@ -1,5 +1,5 @@
 import src.lib.colors as cl
-import os, sys, ctypes, subprocess
+import os, sys, ctypes, tempfile, subprocess
 from src.utils.basics import quest, terminal
 
 options = [
@@ -14,6 +14,17 @@ def display_menu():
         print(f"{cl.b}[{cl.w}{number}{cl.b}]{cl.w} {name}")
         # Add separator for visual clarity every 3 items.
         if i % 3 == 0 and i != len(options): print(f" {cl.w}|")
+
+def run_bat_as_admin(script_path):
+    # Creates and runs a PowerShell script to execute a .bat file as an administrator.
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.ps1') as temp_script:
+        # Write the PowerShell script to run the .bat file as admin
+        temp_script.write(f"""
+        Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command "Start-Process cmd.exe -ArgumentList '/c {script_path}' -Verb RunAs"' -Verb RunAs
+        """.encode())
+    try: subprocess.run(["powershell", "-ExecutionPolicy", "Bypass", "-File", temp_script.name], check=True)
+    except subprocess.CalledProcessError as e: terminal("e", f"Error executing PowerShell script: {e}")
+    finally: os.remove(temp_script.name)
 
 def run_command(command):
     # Executes a command and prints its output and errors.
@@ -83,4 +94,11 @@ def main():
             # Optimize the volume.
             (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
         ] if level == "complete" or cmd_level == level]: run_command(command)
+        if (level == "complete"):
+            for filename in os.listdir("src/services/windows/modules/troubleshooter/scripts"):
+                if filename.endswith('.bat'):
+                    file_path = os.path.join("src/services/windows/modules/troubleshooter/scripts", filename)
+                    print(f"Executing {file_path} as administrator...")
+                    try: subprocess.run(f'powershell Start-Process cmd.exe -ArgumentList "/c {os.path.abspath(file_path)}" -Verb RunAs', check=True, shell=True)
+                    except subprocess.CalledProcessError as e: run_bat_as_admin(os.path.abspath(file_path))
         break

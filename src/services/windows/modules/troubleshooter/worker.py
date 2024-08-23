@@ -16,15 +16,29 @@ def display_menu():
         if i % 3 == 0 and i != len(options): print(f" {cl.w}|")
 
 def run_bat_as_admin(script_path):
-    # Creates and runs a PowerShell script to execute a .bat file as an administrator.
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.ps1') as temp_script:
-        # Write the PowerShell script to run the .bat file as admin
-        temp_script.write(f"""
-        Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command "Start-Process cmd.exe -ArgumentList '/c {script_path}' -Verb RunAs"' -Verb RunAs
-        """.encode())
-    try: subprocess.run(["powershell", "-ExecutionPolicy", "Bypass", "-File", temp_script.name], check=True)
-    except subprocess.CalledProcessError as e: terminal("e", f"Error executing PowerShell script: {e}")
-    finally: os.remove(temp_script.name)
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.ps1') as temp_script:
+            temp_script_path = temp_script.name
+        
+            # Write the PowerShell script to run the .bat file as admin
+            script_content = f"""
+            Start-Process cmd.exe -ArgumentList '/c \"{script_path}\"' -Verb RunAs
+            """
+            temp_script.write(script_content.encode())
+        result = subprocess.run(
+            ["powershell", "-ExecutionPolicy", "Bypass", "-File", temp_script_path],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        print("PowerShell script executed successfully.")
+        print("STDOUT:\n", result.stdout)
+        print("STDERR:\n", result.stderr)
+    except subprocess.CalledProcessError as e: 
+        terminal("e", f"Error executing PowerShell script: {e}")
+        print("STDOUT:\n", e.stdout)
+        print("STDERR:\n", e.stderr)
 
 def run_command(command):
     # Executes a command and prints its output and errors.
@@ -78,27 +92,26 @@ def main():
         # Run the selected commands.
         for command in [cmd for cmd, cmd_level in [
             # Repairs Windows image.
-            (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
-            # Scans and fixes corrupted system files.
-            (["sfc", "/scannow"], "quick"),
-            # Checks disk for errors and repairs them.
-            (["chkdsk", "C:", "/f", "/r"], "complete"),
-            # Resets network settings (Winsock).
-            (["netsh", "winsock", "reset"], "quick"),
-            # Clears the DNS cache.
-            (["ipconfig", "/flushdns"], "quick"),
-            # Disable hibernation.
-            (["powercfg", "-h", "off"], "quick")
-            # Run Disk Cleanup.
-            (["Cleanmgr", "/sagerun:1"], "complete"),
-            # Optimize the volume.
-            (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
+            # (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
+            # # Scans and fixes corrupted system files.
+            # (["sfc", "/scannow"], "quick"),
+            # # Checks disk for errors and repairs them.
+            # (["chkdsk", "C:", "/f", "/r"], "complete"),
+            # # Resets network settings (Winsock).
+            # (["netsh", "winsock", "reset"], "quick"),
+            # # Clears the DNS cache.
+            # (["ipconfig", "/flushdns"], "quick"),
+            # # Disable hibernation.
+            # (["powercfg", "-h", "off"], "quick")
+            # # Run Disk Cleanup.
+            # (["Cleanmgr", "/sagerun:1"], "complete"),
+            # # Optimize the volume.
+            # (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
         ] if level == "complete" or cmd_level == level]: run_command(command)
         if (level == "complete"):
             for filename in os.listdir("src/services/windows/modules/troubleshooter/scripts"):
-                if filename.endswith('.bat'):
+                if filename.endswith(".bat"):
                     file_path = os.path.join("src/services/windows/modules/troubleshooter/scripts", filename)
                     print(f"Executing {file_path} as administrator...")
-                    try: subprocess.run(f'powershell Start-Process cmd.exe -ArgumentList "/c {os.path.abspath(file_path)}" -Verb RunAs', check=True, shell=True)
-                    except subprocess.CalledProcessError as e: run_bat_as_admin(os.path.abspath(file_path))
+                    run_bat_as_admin(os.path.abspath(file_path))
         break

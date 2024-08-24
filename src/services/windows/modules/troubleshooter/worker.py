@@ -58,7 +58,7 @@ def run_command(command):
             terminal("e", f"Error executing {" ".join(command)}: Elevated permissions are required.")
             print("STDOUT:\n", e.stdout)
             print("STDERR:\n", e.stderr)
-            # Attempt to re-run the script with elevated privileges
+            # Attempt to re-run the script with elevated privileges.
             if os.name == "nt":
                 try:
                     # Attempt to re-run the script with elevated privileges.
@@ -70,7 +70,7 @@ def run_command(command):
                         None,
                         1
                     )
-                    sys.exit()  # Exit the current instance
+                    sys.exit()
                 except Exception as e:
                     terminal("e", f"Failed to elevate privileges: {e}")
                     sys.exit(1)
@@ -92,26 +92,25 @@ def main():
         # Run the selected commands.
         for command in [cmd for cmd, cmd_level in [
             # Repairs Windows image.
-            # (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
-            # # Scans and fixes corrupted system files.
-            # (["sfc", "/scannow"], "quick"),
-            # # Checks disk for errors and repairs them.
-            # (["chkdsk", "C:", "/f", "/r"], "complete"),
-            # # Resets network settings (Winsock).
-            # (["netsh", "winsock", "reset"], "quick"),
-            # # Clears the DNS cache.
-            # (["ipconfig", "/flushdns"], "quick"),
-            # # Disable hibernation.
-            # (["powercfg", "-h", "off"], "quick")
-            # # Run Disk Cleanup.
-            # (["Cleanmgr", "/sagerun:1"], "complete"),
-            # # Optimize the volume.
-            # (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
+            (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
+            # Scans and fixes corrupted system files.
+            (["sfc", "/scannow"], "quick"),
+            # Checks disk for errors and repairs them.
+            (["chkdsk", "C:", "/f", "/r"], "complete"),
+            # Resets network settings (Winsock).
+            (["netsh", "winsock", "reset"], "quick"),
+            # Clears the DNS cache.
+            (["ipconfig", "/flushdns"], "quick"),
+            # Disable hibernation.
+            (["powercfg", "-h", "off"], "quick")
+            # Run Disk Cleanup.
+            (["Cleanmgr", "/sagerun:1"], "complete"),
+            # Optimize the volume.
+            (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
         ] if level == "complete" or cmd_level == level]: run_command(command)
         if (level == "complete"):
             for filename in os.listdir("src/services/windows/modules/troubleshooter/scripts"):
                 if filename.endswith(".bat"):
-                    file_path = os.path.join("src/services/windows/modules/troubleshooter/scripts", filename)
-                    print(f"Executing {file_path} as administrator...")
-                    run_bat_as_admin(os.path.abspath(file_path))
+                    print(f"Executing {filename} as administrator...")
+                    run_bat_as_admin(os.path.abspath(os.path.join("src/services/windows/modules/troubleshooter/scripts", filename)))
         break

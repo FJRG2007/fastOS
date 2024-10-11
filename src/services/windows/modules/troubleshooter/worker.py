@@ -1,6 +1,6 @@
 import src.lib.colors as cl
 import os, sys, ctypes, tempfile, subprocess
-from src.utils.basics import quest, terminal
+from src.utils.basics import quest, terminal, getPositive
 
 options = [
     ("1", f"Complete {cl.y}(+45mins approx.){cl.w}"),
@@ -17,7 +17,7 @@ def display_menu():
 
 def run_bat_as_admin(script_path):
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.ps1') as temp_script:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".ps1") as temp_script:
             temp_script_path = temp_script.name
         
             # Write the PowerShell script to run the .bat file as admin
@@ -92,7 +92,9 @@ def main():
         # Run the selected commands.
         for command in [cmd for cmd, cmd_level in [
             # Repairs Windows image.
+            (["DISM", "/Online", "/Cleanup-Image", "/ScanHealth"], "complete"),
             (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
+            (["DISM", "/Online", "/Cleanup-Image", "/StartComponentCleanup"], "complete"),
             # Scans and fixes corrupted system files.
             (["sfc", "/scannow"], "quick"),
             # Checks disk for errors and repairs them.
@@ -113,4 +115,5 @@ def main():
                 if filename.endswith(".bat"):
                     print(f"Executing {filename} as administrator...")
                     run_bat_as_admin(os.path.abspath(os.path.join("src/services/windows/modules/troubleshooter/scripts", filename)))
+        if getPositive(quest("Do you want to restart your computer (recommended)?")): os.system("shutdown /r /t 0")
         break

@@ -20,9 +20,9 @@ def get_os_info():
         if distro: response["distribution"] = distro.linux_distribution(full_distribution_name=False)[0]
         else:
             try:
-                with open('/etc/os-release') as f:
+                with open("/etc/os-release") as f:
                     for line in f:
-                        if line.startswith('NAME='):
+                        if line.startswith("NAME="):
                             response["distribution"] = line.split("=")[1].strip().replace('"', "")
                             break
             except Exception as e: response["distribution"] = "Unknown"
@@ -48,8 +48,8 @@ def coloredText(word, hex_color) -> str:
     except: return word
 
 def quest(prompt, newline=False, lowercase=False, tab=False, format_type=str):
-    prefix = f"\n" if newline else ''
-    prefix += f"\t" if tab else ''
+    prefix = f"\n" if newline else ""
+    prefix += f"\t" if tab else ""
     while True:
         try:
             response = input(f"{prefix}{cl.b}[{cl.w}?{cl.b}]{cl.w} {prompt}: ")

@@ -2,9 +2,9 @@ from dotenv import load_dotenv
 from src.utils.FastOS import FastOS
 from textual.widgets import Markdown
 from src.lib import data, colors as cl
-from src.utils.basics import cls, terminal, get_os_info
+from src.utils.basics import cls, terminal
 from textual.app import App, ComposeResult
-import sys, click, pyfiglet, importlib
+import sys, click, ctypes, pyfiglet, importlib
 
 def get_function(module_name, function_name="main", clearTerminal=True):
     if clearTerminal: cls()
@@ -34,7 +34,20 @@ def info():
                 yield Markdown(content)
         MarkdownExampleApp().run()
 
+def is_admin():
+    # Check if the script is running as an administrator.
+    try: return ctypes.windll.shell32.IsUserAnAdmin()
+    except: return False
+
+def run_as_admin():
+    # Restart the script with admin privileges.
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, ' '.join(sys.argv), None, 1)
+
 def main():
+    if not is_admin():
+        print("Requesting admin privileges...")
+        run_as_admin()
+        sys.exit(0)
     try: cli()
     except KeyboardInterrupt as e: terminal(KeyboardInterrupt)
     except FastOS.InvalidOption as e: terminal("iom")

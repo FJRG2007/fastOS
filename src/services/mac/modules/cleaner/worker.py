@@ -1,5 +1,5 @@
 from pathlib import Path
-import os, shutil, ctypes, tempfile
+import os, shutil, tempfile
 from src.utils.basics import terminal
 
 def delete_folder_contents(folder_path):
@@ -19,34 +19,35 @@ def clear_temp_files():
 def clear_cache():
     # Deletes browser cache (Chrome and Firefox).
     # Cache path for Google Chrome.
-    chrome_cache = Path(os.getenv("LOCALAPPDATA")) / "Google/Chrome/User Data/Default/Cache"
+    chrome_cache = Path("~/Library/Caches/Google/Chrome/Default/Cache").expanduser()
     if chrome_cache.exists(): delete_folder_contents(chrome_cache)
+    
     # Cache path for Firefox.
-    firefox_cache = Path(os.getenv("APPDATA")) / "Mozilla/Firefox/Profiles"
+    firefox_cache = Path("~/Library/Application Support/Firefox/Profiles").expanduser()
     for profile in firefox_cache.glob("*"):
         cache_folder = profile / "cache2"
         if cache_folder.exists(): delete_folder_contents(cache_folder)
     
-    # Cache path for Epic Games Launcher.
-    epic_cache_path = Path(os.getenv("LOCALAPPDATA")) / "EpicGamesLauncher/Saved"
-    for cache_file in ["webcache", "webcache_4147", "webcache_4430"]:
-        cache_file_path = epic_cache_path / cache_file
-        if cache_file_path.exists():
-            try:
-                shutil.rmtree(cache_file_path)
-                terminal("s", f"Removed Epic Games cache: {cache_file}")
-            except Exception as e: terminal("e", f"Error deleting {cache_file_path}: {e}")
-        else: terminal("i", f"{cache_file} not found in Epic Games cache.")
+    # Cache path for Epic Games Launcher
+    epic_cache_path = Path("~/Library/Caches/com.epicgames.EpicGamesLauncher/webcache").expanduser()
+    if epic_cache_path.exists():
+        try:
+            shutil.rmtree(epic_cache_path)
+            terminal("s", "Removed Epic Games cache: webcache")
+        except Exception as e: terminal("e", f"Error deleting {epic_cache_path}: {e}")
+    else: terminal("i", "Epic Games webcache not found.")
 
-def remove_uninstalled_program_files():
-    # Deletes files from programs that are no longer installed.
-    delete_folder_contents(Path(os.getenv("PROGRAMDATA")))
+def empty_trash():
+    # Empties the trash on macOS.
+    try:
+        os.system("rm -rf ~/.Trash/*")
+        terminal("s", "Trash emptied successfully.")
+    except Exception as e:
+        terminal("e", f"Error emptying Trash: {e}")
 
 def main():
     print("Starting cleanup...")
     clear_temp_files()
     clear_cache()
-    # Empties the recycle bin.
-    ctypes.windll.shell32.SHEmptyRecycleBinW(None, None, 1)
-    remove_uninstalled_program_files()
+    empty_trash()
     terminal("s", "Cleanup completed.")

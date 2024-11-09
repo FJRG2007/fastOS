@@ -12,7 +12,7 @@ def get_ping_average():
             times = list(map(int, times))
             return sum(times) / len(times)
         else:
-            terminal("e", "No se pudieron obtener resultados de ping.")
+            terminal("e", "No ping results could be obtained.")
             return None
     except Exception as e:
         terminal("e", f"Error executing ping: {e}")

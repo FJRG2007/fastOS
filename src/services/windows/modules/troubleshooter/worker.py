@@ -1,5 +1,5 @@
-import src.lib.colors as cl
-import os, sys, ctypes, tempfile, subprocess
+from src.utils.terminal import win_run_command
+import os, tempfile, subprocess, src.lib.colors as cl
 from src.utils.basics import quest, terminal, getPositive
 
 options = [
@@ -40,45 +40,6 @@ def run_bat_as_admin(script_path):
         print("STDOUT:\n", e.stdout)
         print("STDERR:\n", e.stderr)
 
-def run_command(command):
-    # Executes a command and prints its output and errors.
-    try:
-        result = subprocess.run(
-            command,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        print(f"Command: {" ".join(command)}")
-        print("STDOUT:\n", result.stdout)
-        print("STDERR:\n", result.stderr)
-    except subprocess.CalledProcessError as e:
-        if e.returncode == 740:
-            terminal("e", f"Error executing {" ".join(command)}: Elevated permissions are required.")
-            print("STDOUT:\n", e.stdout)
-            print("STDERR:\n", e.stderr)
-            # Attempt to re-run the script with elevated privileges.
-            if os.name == "nt":
-                try:
-                    # Attempt to re-run the script with elevated privileges.
-                    ctypes.windll.shell32.ShellExecuteW(
-                        None,
-                        "runas",
-                        sys.executable,
-                        f'"{os.path.abspath(sys.argv[0])}" {" ".join(sys.argv[1:])}',
-                        None,
-                        1
-                    )
-                    sys.exit()
-                except Exception as e:
-                    terminal("e", f"Failed to elevate privileges: {e}")
-                    sys.exit(1)
-        else:
-            terminal("e", f"Error executing {" ".join(command)}: {e}")
-            print("STDOUT:\n", e.stdout)
-            print("STDERR:\n", e.stderr)
-
 def main():
     while True:
         display_menu()
@@ -111,7 +72,7 @@ def main():
             (["Cleanmgr", "/sagerun:1"], "complete"),
             # Optimize the volume.
             (["powershell.exe", "-Command", "Optimize-Volume -DriveLetter C -ReTrim -Verbose"], "complete")
-        ] if level == "complete" or cmd_level == level]: run_command(command)
+        ] if level == "complete" or cmd_level == level]: win_run_command(command)
         if (level == "complete"):
             for filename in os.listdir("src/services/windows/modules/troubleshooter/scripts"):
                 if filename.endswith(".bat"):

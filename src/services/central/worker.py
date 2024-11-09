@@ -9,8 +9,9 @@ options = [
     ("1", "all", f"All {cl.y}(Default){cl.w}"),
     ("2", "cleaner", f"Cleaner {cl.y}(Removes cache, uninstalled program files, etc.){cl.w}"),
     ("3", "configurator", f"Configurator {cl.y}(Improved performance and safety){cl.w}"),
-    ("4", "troubleshooter", f"Troubleshooter {cl.y}(Improve performance and troubleshoot problems){cl.w}"),
-    ("5", "uninstaller", f"Uninstaller {cl.y}(Removes bloatware and unnecessary apps){cl.w}")
+    ("4", "network", f"Network {cl.y}(Lower latency for web and gaming){cl.w}"),
+    ("5", "troubleshooter", f"Troubleshooter {cl.y}(Improve performance and troubleshoot problems){cl.w}"),
+    ("6", "uninstaller", f"Uninstaller {cl.y}(Removes bloatware and unnecessary apps){cl.w}")
 ]
 
 def display_menu():
@@ -33,5 +34,5 @@ def main():
                 cls()
                 if os_info["slug"] and os_info["slug"] != "error": get_function(os_info["slug"])(os_info["distribution_slug"], options[index][1]) if os_info["slug"] == "linux" else get_function(os_info["slug"])(options[index][1])
                 break  # Exit the loop if a valid option was processed.
-            else: raise ValueError("Invalid selection")
+            else: raise terminal("e", f"Invalid input: {e}")
         except ValueError as e: terminal("e", f"Invalid input: {e}")

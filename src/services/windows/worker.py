@@ -7,6 +7,6 @@ def get_function(module_name, function_name="main"):
 
 def main(action="all"):
     if (action == "all"):
-        for module in ["cleaner", "configurator", "troubleshooter", "uninstaller"]:
+        for module in ["cleaner", "configurator", "network", "troubleshooter", "uninstaller"]:
             get_function(module)()
     else: get_function(action)()

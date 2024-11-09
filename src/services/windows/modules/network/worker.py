@@ -1,13 +1,15 @@
-
+import re, winreg as reg, subprocess
 from src.utils.basics import terminal
-import re, sys, ctypes, winreg as reg, subprocess
 from src.utils.terminal import win_run_command
 
 def get_ping_average():
     try:
         print("Measuring ping superficially from Fortnite (Epic Games) as an example....")
         result = subprocess.run(["ping", "ping-nae.ds.on.epicgames.com", "-n", "10"], capture_output=True, text=True)
-        times = re.findall(r'time=(\d+)ms', result.stdout)
+        times = []
+        for line in result.stdout.splitlines():
+            match = re.search(r'(\d+)(?=ms)', line)
+            if re.search(r'(\d+)(?=ms)', line): times.append(int(match.group(0)))
         if times:
             times = list(map(int, times))
             return sum(times) / len(times)

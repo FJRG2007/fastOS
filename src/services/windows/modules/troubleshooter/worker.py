@@ -57,7 +57,7 @@ def main():
             (["DISM", "/Online", "/Cleanup-Image", "/RestoreHealth"], "complete"),
             (["DISM", "/Online", "/Cleanup-Image", "/StartComponentCleanup"], "complete"),
             # Disable Recall feature.
-            (["Dism", "/Online", "/Disable-Feature", "/Featurename:Recall", "2>nul"], "complete"),
+            (["Dism", "/Online", "/Disable-Feature", "/Featurename:Recall"], "complete"),
             # Scans and fixes corrupted system files.
             (["sfc", "/scannow"], "quick"),
             # Checks disk for errors and repairs them.
